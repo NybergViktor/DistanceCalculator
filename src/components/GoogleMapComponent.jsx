@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { GoogleMap, LoadScript, MarkerF, Polyline, InfoWindow } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  LoadScript,
+  MarkerF,
+  Polyline,
+  InfoWindow,
+} from "@react-google-maps/api";
 
 const containerStyle = {
   width: "100vw",
@@ -21,8 +27,10 @@ const haversineDistance = (lat1, lng1, lat2, lng2) => {
 
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-    Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
@@ -49,7 +57,7 @@ const GoogleMapComponent = ({ setTotalDistance, clearAll }) => {
     const newLng = event.latLng.lng();
 
     setMarkers((currentMarkers) =>
-      currentMarkers.map(marker =>
+      currentMarkers.map((marker) =>
         marker.id === id ? { ...marker, lat: newLat, lng: newLng } : marker
       )
     );
@@ -67,8 +75,10 @@ const GoogleMapComponent = ({ setTotalDistance, clearAll }) => {
 
     for (let i = 0; i < markers.length - 1; i++) {
       const d = haversineDistance(
-        markers[i].lat, markers[i].lng,
-        markers[i + 1].lat, markers[i + 1].lng
+        markers[i].lat,
+        markers[i].lng,
+        markers[i + 1].lat,
+        markers[i + 1].lng
       );
 
       newDistances.push({
@@ -93,8 +103,19 @@ const GoogleMapComponent = ({ setTotalDistance, clearAll }) => {
     }
   }, [clearAll]);
 
+  const [apiKey, setApiKey] = useState("");
+
+  useEffect(() => {
+    fetch(
+      "https://aqps33wlqzkitdpkhd2666afni0faqdy.lambda-url.eu-north-1.on.aws/"
+    )
+      .then((response) => response.json())
+      .then((data) => setApiKey(data.apiKey))
+      .catch((error) => console.error("API key fetch error:", error));
+  }, []);
+
   return (
-    <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+    <LoadScript googleMapsApiKey={apiKey}>
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
