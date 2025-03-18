@@ -1,0 +1,27 @@
+.con {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  width: 90%;
+}
+.mainCon{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tempo{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+button{
+  height: 2rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(31, 85, 201);
+  color: white;
+  cursor: pointer;
+}
