@@ -105,14 +105,19 @@ const GoogleMapComponent = ({ setTotalDistance, clearAll }) => {
 
   const [apiKey, setApiKey] = useState("");
 
-  useEffect(() => {
-    fetch(
-      "https://aqps33wlqzkitdpkhd2666afni0faqdy.lambda-url.eu-north-1.on.aws/"
-    )
-      .then((response) => response.json())
-      .then((data) => setApiKey(data.apiKey))
-      .catch((error) => console.error("API key fetch error:", error));
-  }, []);
+useEffect(() => {
+    fetch("https://aqps33wlqzkitdpkhd2666afni0faqdy.lambda-url.eu-north-1.on.aws/", {
+        headers: { "x-access-key": "hjkhd3423jkashjkd121jhjksadk4899sa" } // Skyddar API-nyckeln
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error("Unauthorized");
+        }
+        return response.json();
+    })
+    .then((data) => setApiKey(data.apiKey))
+    .catch((error) => console.error("API key fetch error:", error));
+}, []);
 
   return (
     <LoadScript googleMapsApiKey={apiKey}>
