@@ -106,21 +106,22 @@ const GoogleMapComponent = ({ setTotalDistance, clearAll }) => {
   const [apiKey, setApiKey] = useState("");
 
   useEffect(() => {
-    fetch(
-      "https://aqps33wlqzkitdpkhd2666afni0faqdy.lambda-url.eu-north-1.on.aws/",
-      {
-        headers: { "x-access-key": "mJ3pQ7yXgT4kLz9pB2vF6dN8aW5rC1sY" }, //  hemlig nyckel
-      }
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Unauthorized");
+    fetch("https://aqps33wlqzkitdpkhd2666afni0faqdy.lambda-url.eu-north-1.on.aws/", {
+        method: "GET",
+        headers: {
+            "x-access-key": "hjkhd3423jkasjhkd121jhjksadk4899sa", 
+            "Accept": "application/json",
+            "Content-Type": "application/json"
         }
-        return response.json();
-      })
-      .then((data) => setApiKey(data.apiKey))
-      .catch((error) => console.error("API key fetch error:", error));
-  }, []);
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Lambda response:", data);
+        setApiKey(data.apiKey);
+    })
+    .catch(error => console.error("API key fetch error:", error));
+}, []);
+
 
   return (
     <LoadScript googleMapsApiKey={apiKey}>
