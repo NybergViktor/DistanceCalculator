@@ -25,3 +25,8 @@ button{
   color: white;
   cursor: pointer;
 }
+.con select {
+  color: rgb(78, 78, 78);
+  border: none;
+  font-size: medium;
+}

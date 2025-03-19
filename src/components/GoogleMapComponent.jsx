@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   GoogleMap,
   LoadScript,
@@ -35,10 +35,19 @@ const haversineDistance = (lat1, lng1, lat2, lng2) => {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 };
+import { LocationContext } from "./LocationContext";
 
 const GoogleMapComponent = ({ setTotalDistance, clearAll }) => {
   const [markers, setMarkers] = useState([]);
   const [distances, setDistances] = useState([]);
+
+  const context = useContext(LocationContext);
+
+  if (!context) {
+    throw new Error("GoogleMapComponent måste omslutas av LocationProvider");
+  }
+
+  const { latitude, setLat, longitude, setLon } = context;
 
   // Lägg till en ny markör vid klick på kartan
   const handleMapClick = (event) => {
@@ -50,6 +59,13 @@ const GoogleMapComponent = ({ setTotalDistance, clearAll }) => {
         lng: event.latLng.lng(),
       },
     ]);
+
+    if (longitude === "") {
+      setLon(event.latLng.lng());
+    }
+    if (latitude === "") {
+      setLat(event.latLng.lat());
+    }
   };
 
   const handleMarkerDragEnd = (event, id) => {
@@ -106,25 +122,27 @@ const GoogleMapComponent = ({ setTotalDistance, clearAll }) => {
   const [apiKey, setApiKey] = useState("");
 
   useEffect(() => {
-    fetch("https://aqps33wlqzkitdpkhd2666afni0faqdy.lambda-url.eu-north-1.on.aws/", {
+    fetch(
+      "https://aqps33wlqzkitdpkhd2666afni0faqdy.lambda-url.eu-north-1.on.aws/",
+      {
         method: "GET",
         headers: {
-            "x-access-key": "hjkhd3423jkasjhkd121jhjksadk4899sa", 
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
+          "x-access-key": "hjkhd3423jkasjhkd121jhjksadk4899sa",
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
         console.log("Lambda response:", data);
         setApiKey(data.apiKey);
-    })
-    .catch(error => console.error("API key fetch error:", error));
-}, []);
-
+      })
+      .catch((error) => console.error("API key fetch error:", error));
+  }, []);
 
   return (
-    <LoadScript googleMapsApiKey={apiKey}>
+    <LoadScript googleMapsApiKey={"AIzaSyC28szsacEbmFxw3SJ45KNCj7rE9JRl1Yw"}>
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}

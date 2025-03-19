@@ -1,0 +1,6 @@
+.weatherCon{
+    display: flex;
+    flex-direction: row;
+    height: auto;
+    gap: 10px;
+}
