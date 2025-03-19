@@ -138,8 +138,6 @@ const GoogleMapComponent = ({ setTotalDistance, clearAll }) => {
     }
   }, []);
 
-  // apiKey ska vara AIzaSyC28szsacEbmFxw3SJ45KNCj7rE9JRl1Yw och jag får den i console.log
-  // kan det vara något fel att den hämtas för sent? för när jag klistrar in den i googleMapsApiKey så fungerar det.
 
   return apiKey ? (
     <LoadScript googleMapsApiKey={apiKey.toString()}>
