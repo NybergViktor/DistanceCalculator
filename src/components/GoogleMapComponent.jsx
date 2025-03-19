@@ -43,10 +43,6 @@ const GoogleMapComponent = ({ setTotalDistance, clearAll }) => {
 
   const context = useContext(LocationContext);
 
-  if (!context) {
-    throw new Error("GoogleMapComponent måste omslutas av LocationProvider");
-  }
-
   const { latitude, setLat, longitude, setLon } = context;
 
   // Lägg till en ny markör vid klick på kartan
@@ -122,31 +118,35 @@ const GoogleMapComponent = ({ setTotalDistance, clearAll }) => {
   const [apiKey, setApiKey] = useState("");
 
   useEffect(() => {
-    fetch(
-      "https://aqps33wlqzkitdpkhd2666afni0faqdy.lambda-url.eu-north-1.on.aws/",
-      {
-        method: "GET",
-        headers: {
-          "x-access-key": "hjkhd3423jkasjhkd121jhjksadk4899sa",
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Lambda response:", data);
-        setApiKey(data.apiKey);
-      })
-      .catch((error) => console.error("API key fetch error:", error));
+    if (!apiKey) {
+      fetch(
+        "https://aqps33wlqzkitdpkhd2666afni0faqdy.lambda-url.eu-north-1.on.aws/",
+        {
+          method: "GET",
+          headers: {
+            "x-access-key": "hjkhd3423jkasjhkd121jhjksadk4899sa",
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data.apiKey) {
+            setApiKey(data.apiKey);
+          }
+        })
+        .catch((error) => console.error("fetch error: " + error));
+    }
   }, []);
 
-  return (
-    <LoadScript googleMapsApiKey={"AIzaSyC28szsacEbmFxw3SJ45KNCj7rE9JRl1Yw"}>
+  // apiKey ska vara AIzaSyC28szsacEbmFxw3SJ45KNCj7rE9JRl1Yw och jag får den i console.log
+  // kan det vara något fel att den hämtas för sent? för när jag klistrar in den i googleMapsApiKey så fungerar det.
+
+  return apiKey ? (
+    <LoadScript googleMapsApiKey={apiKey.toString()}>
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
-        zoom={16} // Zoom satt till 16
+        zoom={16}
         mapTypeId="satellite"
         onClick={handleMapClick}
       >
@@ -162,7 +162,6 @@ const GoogleMapComponent = ({ setTotalDistance, clearAll }) => {
             }}
           />
         ))}
-
         {distances.length > 0 &&
           distances.map(({ id, start, end, distance }) => (
             <Polyline
@@ -177,6 +176,8 @@ const GoogleMapComponent = ({ setTotalDistance, clearAll }) => {
           ))}
       </GoogleMap>
     </LoadScript>
+  ) : (
+    <p>Laddar kartan...</p>
   );
 };
 
