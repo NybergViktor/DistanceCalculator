@@ -9,7 +9,7 @@ const WeatherComponent = () => {
 
   const { latitude, longitude } = useContext(LocationContext);
 
-  const API_KEY = "c1c2a9e7baffbc21c586db21e1989f4b";
+  const API_KEY = "c1c2a9e7baffbc21c586db21e1989f4b"; // aws secret (cors)
   const API_URL = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${API_KEY}`;
 
   if (latitude != "" && longitude != "" && !weather) {
